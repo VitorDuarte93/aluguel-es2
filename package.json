@@ -12,14 +12,10 @@
   "scripts": {
     "test": "jest --coverage --coverageReporters=lcov --coverageReporters=text"
   },
-"jest": {
-  "collectCoverage": true,
-  "collectCoverageFrom": ["services/**/*.js"],
-  "coverageDirectory": "coverage",
-  "coverageReporters": ["lcov", "text"]
-}
-
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": ["services/**/*.js"],
     "coverageDirectory": "coverage",
     "coverageReporters": ["lcov", "text"]
   }
-
+}
