@@ -22,6 +22,9 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Clean coverage folder
+        run: rm -rf coverage
+
       - name: Install dependencies
         run: npm install
 
