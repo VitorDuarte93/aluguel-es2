@@ -9,7 +9,7 @@
   "devDependencies": {
     "jest": "^29.0.0"
   },
- "scripts": {
-  "test": "jest --coverage --coverageReporters=lcov"
+"scripts": {
+  "test": "jest --coverage --coverageReporters=lcov --coverageReporters=text"
 }
 }
