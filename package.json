@@ -22,4 +22,4 @@
     "coverageDirectory": "coverage",
     "coverageReporters": ["lcov", "text"]
   }
-}
+
