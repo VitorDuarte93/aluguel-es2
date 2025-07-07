@@ -15,7 +15,7 @@ const { beforeEach, describe, it, expect} = require('@jest/globals');
 
 // Mocks
 jest.mock('fs');
-jest.mock('../metodos/validacao');
+jest.mock('../services/validacao');
 
 let mockDb;
 
