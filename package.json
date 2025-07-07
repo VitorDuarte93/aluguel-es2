@@ -9,7 +9,18 @@
   "devDependencies": {
     "jest": "^29.0.0"
   },
-"scripts": {
-  "test": "jest --coverage --coverageReporters=lcov --coverageReporters=text"
-}
+  "scripts": {
+    "test": "jest --coverage --coverageReporters=lcov --coverageReporters=text"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/node_modules/**",
+      "!**/__mocks__/**",
+      "!**/coverage/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["lcov", "text"]
+  }
 }
