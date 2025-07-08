@@ -34,10 +34,17 @@ async function buscaFuncionarioPorEmail(email) {
     }
 }
 
-async function adicionaFuncionario(senha, email, nome, idade, funcao, cpf){
+async function adicionaFuncionario(senha, email, nome, idade, funcao, cpf) {
     try {
+        if (!nome) throw new Error('Nome é obrigatório');
+        if (!email) throw new Error('Email é obrigatório');
+        if (!cpf) throw new Error('CPF é obrigatório');
+        if (!senha) throw new Error('Senha é obrigatória');
+        if (!funcao) throw new Error('Função é obrigatória');
+
         const raw = await fs.readFile(dbFuncionario, 'utf-8');
-        const funcionarios = JSON.parse(raw).funcionarios;
+        const funcionariosJson = JSON.parse(raw);
+        const funcionarios = funcionariosJson.funcionarios;
 
         // Verifica se o funcionário já existe
         const funcionarioExistente = funcionarios.find(f => f.email === email);
@@ -45,11 +52,9 @@ async function adicionaFuncionario(senha, email, nome, idade, funcao, cpf){
             throw new Error('Funcionário já cadastrado com esse email');
         }
 
-        let matricula = "F";
-        let num = funcionarios.length + 1;
-        num = num.toString();
-        matricula = matricula + num;
-
+        // Gera matrícula automática (ex: F001, F002...)
+        const numeroMatricula = (funcionarios.length + 1).toString().padStart(3, '0');
+        const matricula = `F${numeroMatricula}`;
 
         // Cria novo funcionário
         const novoFuncionario = {
@@ -63,14 +68,18 @@ async function adicionaFuncionario(senha, email, nome, idade, funcao, cpf){
         };
 
         funcionarios.push(novoFuncionario);
-        await fs.writeFile(dbFuncionario, JSON.stringify({ funcionarios }, null, 2));
+
+        await fs.writeFile(
+            dbFuncionario,
+            JSON.stringify({ funcionarios }, null, 2)
+        );
 
         return novoFuncionario;
+
     } catch (error) {
         throw new Error('Erro ao adicionar funcionário: ' + error.message);
     }
 }
-
 async function atualizaFuncionario(id, novosDados) {
     try {
         const raw = await fs.readFile(dbFuncionario, 'utf-8');

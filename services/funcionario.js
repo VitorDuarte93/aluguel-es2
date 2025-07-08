@@ -8,12 +8,14 @@ async function criaFuncionario(funcionario) {
     return await database.adicionaFuncionario(funcionario);
 }
 
-async function atualizaFuncionario(id, novosDados) {
-    const funcionarioAtualizado = await database.atualizaFuncionario(id, novosDados);
-    if (!funcionarioAtualizado) {
-        throw new Error('Erro ao atualizar funcionário');
+async function atualizaFuncionario(id, dados) {
+    const resultado = await database.atualizaFuncionario(id, dados);
+
+    if (!resultado) {
+        throw new Error('Funcionário não encontrado');
     }
-    return funcionarioAtualizado;
+
+    return resultado;
 }
 
 async function deletaFuncionario(id) {
