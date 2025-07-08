@@ -1,9 +1,9 @@
-const database = require('../repositories/aluguelDB');
+const database = require('../repositories/acessoDB/aluguelDB');
 const { alugarBicicleta, devolverBicicleta } = require('../services/aluguel');
 const { beforeEach, describe, it, expect } = require('@jest/globals');
 
 // Mocks
-jest.mock('../repositories/aluguelDB');
+jest.mock('../repositories/acessoDB/aluguelDB');
 
 describe('alugarBicicleta', () => {
     beforeEach(() => {
