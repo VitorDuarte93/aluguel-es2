@@ -1,6 +1,7 @@
 // tests/cartaoController.test.js
 const request = require('supertest');
 const express = require('express');
+const { beforeEach, describe, it, expect } = require('@jest/globals');
 
 // Mock the cartao service
 jest.mock('../services/cartao');

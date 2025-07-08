@@ -1,6 +1,7 @@
 // tests/ciclistaService.test.js
 const ciclistaService = require('../services/ciclista');
 const db = require('../repositories/acessoDB/ciclistaDB');
+const { beforeEach, describe, it, expect } = require('@jest/globals');
 
 jest.mock('../repositories/ciclistaDB');
 
