@@ -1,5 +1,5 @@
 const database = require('../repositories/acessoDB/funcionariosDB');
-const { criaFuncionario, atualizaFuncionario } = require('../services/funcionario');
+const funcionarioService = require('../services/funcionario');
 const { beforeEach, describe, it, expect } = require('@jest/globals');
 
 // Mocks

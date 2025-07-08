@@ -48,7 +48,7 @@ describe('CartãoController', () => {
 
             const res = await request(app).get('/cartaoDeCredito/30110');
             expect(res.status).toBe(500);
-            expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
+            expect(res.body).toEqual({ erro: 'Erro ao recuperar cartão de crédito: Error: DB failure' });
         });
     });
 
