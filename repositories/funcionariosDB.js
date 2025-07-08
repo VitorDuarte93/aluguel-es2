@@ -2,9 +2,6 @@ const fs = require('fs/promises');
 const path = require('path');
 
 const dbFuncionario = path.join(__dirname, 'funcionarios.json');
-
-//Seleciona a bicicleta associada à tranca informada
-
 async function buscaFuncionarioPorId(idFuncionario){
     try {
         const raw = await fs.readFile(dbFuncionario, 'utf-8');
@@ -108,7 +105,6 @@ async function deletaFuncionario(idFuncionario){
             throw new Error('Funcionário não encontrado');
         }
 
-        // Remove o funcionário
         funcionarios.splice(funcionarioIndex, 1);
 
         await fs.writeFile(dbFuncionario, JSON.stringify({ funcionarios }, null, 2));
@@ -119,10 +115,20 @@ async function deletaFuncionario(idFuncionario){
     }
 }
 
+async function retornaTodosFuncionarios(){
+    try {
+        const raw = await fs.readFile(dbFuncionario, 'utf-8');
+        return JSON.parse(raw).funcionarios;
+    } catch (error) {
+        throw new Error('Erro ao buscar funcionários: ' + error.message);
+    }
+}
+
 module.exports = {
     buscaFuncionarioPorId,
     buscaFuncionarioPorEmail,
     adicionaFuncionario,
     atualizaFuncionario,
-    deletaFuncionario
+    deletaFuncionario,
+    retornaTodosFuncionarios
 }

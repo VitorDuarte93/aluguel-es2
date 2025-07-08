@@ -24,10 +24,28 @@ async function deletaFuncionario(id) {
     return { mensagem: 'Funcionário deletado com sucesso' };
 }
 
+async function retornaTodosFuncionarios(){
+    const funcionarios = await database.retornaTodosFuncionarios();
+    if (!funcionarios) {
+        throw new Error('Erro ao buscar funcionários');
+    }
+    return funcionarios;
+}
+
+async function buscaFuncionarioPorId(id){
+    const funcionario = await database.buscaFuncionarioPorId(id);
+    if (!funcionario) {
+        throw new Error('Funcionário não encontrado');
+    }
+    return funcionario;
+}
+
 module.exports = {
     criaFuncionario,
     atualizaFuncionario,
-    deletaFuncionario
+    deletaFuncionario,
+    retornaTodosFuncionarios,
+    buscaFuncionarioPorId
 };
 
 
