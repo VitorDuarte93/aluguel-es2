@@ -1,4 +1,4 @@
-const database = require('../repositories/funcionariosDB');
+const database = require('../repositories/acessoDB/funcionariosDB');
 async function criaFuncionario(funcionario) {
     const funcionarioExistente = await database.buscaFuncionarioPorEmail(funcionario.email);
     if (funcionarioExistente) {

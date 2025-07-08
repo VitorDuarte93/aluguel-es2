@@ -1,4 +1,4 @@
-const database = require('../repositories/aluguelDB')
+const database = require('../repositories/acessoDB/aluguelDB')
 async function alugarBicicleta(idCiclista, idTranca) {
     let bicicleta = await database.recuperaBicicletaPorTranca(idTranca);
 

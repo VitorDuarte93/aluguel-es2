@@ -16,10 +16,9 @@ router.post('/ciclista', async (req, res) => {
         return res.status(422).json({ erro: 'Senhas não conferem' });
     }
 
-    //verifica se veio tds os dados de ciclista
+    //verifica se veio todos os dados de ciclista
     if (
         !ciclista.nome ||
-        !ciclista.nascimento ||
         !ciclista.cpf ||
         !ciclista.email
     ) {
