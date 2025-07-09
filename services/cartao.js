@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const dbPath = path.join(__dirname, '../ciclistas.json');
+const dbPath = path.join(__dirname, '../repositories/ciclistas.json);
 async function recuperaCartao(idCiclista){
     let db;
     try {
