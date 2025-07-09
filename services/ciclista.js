@@ -58,9 +58,9 @@ async function existeEmail(email){
 }
 
 module.exports = {
-    cadastrarCiclista,
-    alteraCiclista,
-    recuperaCiclista,
-    ativarCiclista,
-    existeEmail
-}
+  createCiclista: cadastrarCiclista,
+  updateCiclista: alteraCiclista,
+  getCiclistaById: recuperaCiclista,
+  activateCiclista: ativarCiclista,
+  emailExists: existeEmail
+};
