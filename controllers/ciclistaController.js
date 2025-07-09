@@ -44,7 +44,7 @@ router.put('/ciclista/:id', async (req, res) => {
     }
 
     try {
-        const ciclistaAtualizado = await ciclistaMetodos.alteraCiclista(ciclistaId, dadosCiclista);
+        const ciclistaAtualizado = await ciclistaMetodos.updateCiclista(ciclistaId, dadosCiclista);
         res.status(200).json(ciclistaAtualizado);
     } catch (error) {
         console.error('Erro ao atualizar ciclista:', error);
@@ -59,7 +59,7 @@ router.get('/ciclista/:id', async (req, res) => {
     }
 
     try {
-        const ciclista = await ciclistaMetodos.recuperaCiclista(id);
+        const ciclista = await ciclistaMetodos.getCiclistaById((id);
         if (!ciclista) {
             return res.status(404).json({ erro: 'Ciclista não encontrado' });
         }
@@ -92,7 +92,7 @@ router.post('/ciclista/:id/ativar', async (req, res) => {
         return res.status(404).json({ erro: 'Requisição mal formada' });
     }
     try {
-        const ciclistaAtivado = await ciclistaMetodos.ativarCiclista(ciclistaId);
+        const ciclistaAtivado = await ciclistaMetodos.activateCiclista(ciclistaId);
         res.status(200).json(ciclistaAtivado);
     } catch (error) {
         console.error('Erro ao ativar ciclista:', error);
@@ -107,7 +107,7 @@ router.get('/ciclista/existeEmail/:email', async (req, res) => {
     }
 
     try {
-        const existe = await ciclistaMetodos.existeEmail(email);
+        const existe = await ciclistaMetodos.emailExists(email);
         res.status(200).json({ existe });
     } catch (error) {
         console.error('Erro ao verificar email:', error);
