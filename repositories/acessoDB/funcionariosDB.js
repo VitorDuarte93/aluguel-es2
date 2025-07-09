@@ -34,7 +34,8 @@ async function buscaFuncionarioPorEmail(email) {
     }
 }
 
-async function adicionaFuncionario(senha, email, nome, idade, funcao, cpf) {
+async function adicionaFuncionario(funcionario) {
+    const { senha, email, nome, idade, funcao, cpf } = funcionario;
     try {
         if (!nome) throw new Error('Nome é obrigatório');
         if (!email) throw new Error('Email é obrigatório');
