@@ -48,14 +48,15 @@ describe('funcionariosDB', () => {
     fs.readFile.mockResolvedValue(JSON.stringify(mockFuncionarios));
     fs.writeFile.mockResolvedValue();
 
-    const novo = await funcionariosDB.adicionaFuncionario(
-      "novaSenha",
-      "novo@email.com",
-      "Carlos",
-      28,
-      "Supervisor",
-      "11122233344"
-    );
+   const novo = await funcionariosDB.adicionaFuncionario({
+  senha: "novaSenha",
+  email: "novo@email.com",
+  nome: "Carlos",
+  idade: 28,
+  funcao: "Supervisor",
+  cpf: "11122233344"
+});
+
 
     expect(novo.nome).toBe("Carlos");
     expect(fs.writeFile).toHaveBeenCalled();
