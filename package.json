@@ -18,10 +18,12 @@
   "collectCoverageFrom": [
     "**/*.js",
     "!**/node_modules/**",
-    "!**/tests/**"
+    "!**/tests/**",
+    "!rotas/servidor.js"
   ],
   "coverageDirectory": "coverage",
   "coverageReporters": ["lcov", "text"]
 }
+
 
 }
