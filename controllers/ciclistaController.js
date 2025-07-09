@@ -52,7 +52,7 @@ router.put('/ciclista/:id', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/ciclista/:id', async (req, res) => {
     let id = req.params.id;
     if (!id) {
         return res.status(404).json({ erro: 'Requisição mal formada' });
@@ -70,7 +70,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/ciclista/:id', async (req, res) => {
     const ciclistaId = req.params.id;
 
     if (!ciclistaId) {
@@ -86,7 +86,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.post('/:id/ativar', async (req, res) => {
+router.post('/ciclista/:id/ativar', async (req, res) => {
     const ciclistaId = req.params.id;
     if (!ciclistaId) {
         return res.status(404).json({ erro: 'Requisição mal formada' });
@@ -100,7 +100,7 @@ router.post('/:id/ativar', async (req, res) => {
     }
 });
 
-router.get('/existeEmail/:email', async (req, res) => {
+router.get('/ciclista/existeEmail/:email', async (req, res) => {
     let email = req.params.email;
     if (!email) {
         return res.status(404).json({ erro: 'Requisição mal formada' });
