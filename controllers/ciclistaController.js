@@ -59,7 +59,7 @@ router.get('/ciclista/:id', async (req, res) => {
     }
 
     try {
-        const ciclista = await ciclistaMetodos.getCiclistaById((id);
+        const ciclista = await ciclistaMetodos.getCiclistaById(id);
         if (!ciclista) {
             return res.status(404).json({ erro: 'Ciclista não encontrado' });
         }
