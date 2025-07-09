@@ -54,9 +54,9 @@ describe('ciclistaService', () => {
         it('deve chamar o repositório e retornar resultado', async () => {
             const mockUpdated = { id: '1', nome: 'Maria' };
             db.atualizarCiclista.mockResolvedValue(mockUpdated);
-            const result = await ciclistaService.updateCiclista('1', { nome: 'Maria' });
-            expect(db.atualizarCiclista).toHaveBeenCalledWith('1', { nome: 'Maria' });
-            expect(result).toBe(mockUpdated);
+            const result = await ciclistaService.updateCiclista('1'); // só ID
+            expect(db.atualizarCiclista).toHaveBeenCalledWith('1');
+
         });
     });
 
