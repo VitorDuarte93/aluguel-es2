@@ -48,7 +48,7 @@ async function adicionaFuncionario(funcionario) {
         const funcionarios = funcionariosJson.funcionarios;
 
         // Verifica se o funcionário já existe
-        const funcionarioExistente = funcionarios.(f => f.email === email);
+        const funcionarioExistente = funcionarios.find(f => f.email === email);
         if (funcionarioExistente) {
             throw new Error('Funcionário já cadastrado com esse email');
         }
@@ -110,7 +110,7 @@ async function deletaFuncionario(idFuncionario){
         const raw = await fs.readFile(dbFuncionario, 'utf-8');
         const funcionarios = JSON.parse(raw).funcionarios;
 
-        const funcionarioIndex = funcionarios.findIndex(f => f.matricula === id);
+        const funcionarioIndex = funcionarios.findIndex(f => f.matricula === idFuncionario);
         if (funcionarioIndex === -1) {
             throw new Error('Funcionário não encontrado');
         }
