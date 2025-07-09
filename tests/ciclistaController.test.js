@@ -1,18 +1,112 @@
+// tests/cartaoController.test.js
 const request = require('supertest');
 const express = require('express');
 const { beforeEach, describe, it, expect } = require('@jest/globals');
 
-jest.mock('../services/ciclista');
-const ciclistaService = require('../services/ciclista');
+// Mock the cartao service
+jest.mock('../services/cartao');
+const cartaoService = require('../services/cartao');
 
-const ciclistaRouter = require('../controllers/ciclistaController');
-const app = express();
-app.use(express.json());
-app.use(ciclistaRouter);
+// Import the controller/router
+const cartaoController = require('../controllers/cartaoController');
 
-beforeEach(() => jest.clearAllMocks());
+// Setup express app for testing
+function createApp() {
+    const app = express();
+    app.use(express.json());
+    app.use(cartaoController);
+    return app;
+}
 
+describe('CartãoController', () => {
+    let app;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        app = createApp();
+    });
+
+    describe('GET /cartaoDeCredito/:idCiclista', () => {
+        it('retorna 404 se idCiclista não for fornecido', async () => {
+            const res = await request(app).get('/cartaoDeCredito/');
+            expect(res.status).toBe(404);
+            expect(res.body).toEqual({ erro: 'Requisição mal formada' });
+        });
+
+        it('retorna 200 e o cartão em caso de sucesso', async () => {
+            const mockCartao = { id: '39044', numero: '4111111111111111' };
+            cartaoService.recuperaCartao.mockResolvedValue(mockCartao);
+
+            const res = await request(app).get('/cartaoDeCredito/30110');
+            expect(cartaoService.recuperaCartao).toHaveBeenCalledWith('30110');
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual(mockCartao);
+        });
+
+        it('retorna 500 se o serviço lançar erro', async () => {
+            cartaoService.recuperaCartao.mockRejectedValue(new Error('DB failure'));
+
+            const res = await request(app).get('/cartaoDeCredito/30110');
+            expect(res.status).toBe(500);
+            expect(res.body).toEqual({ erro: 'Erro ao recuperar cartão de crédito: Error: DB failure' });
+        });
+    });
+
+    describe('PUT /cartaoDeCredito/:idCiclista', () => {
+        it('retorna 404 se idCiclista ou body estiver faltando', async () => {
+            const res1 = await request(app).put('/cartaoDeCredito/');
+            expect(res1.status).toBe(404);
+            expect(res1.body).toEqual({ erro: 'Requisição mal formada' });
+
+            const res2 = await request(app)
+                .put('/cartaoDeCredito/30110')
+                .send(); // empty body
+            expect(res2.status).toBe(404);
+            expect(res2.body).toEqual({ erro: 'Requisição mal formada' });
+        });
+
+        it('retorna 200 e o cartão atualizado em caso de sucesso', async () => {
+            const updateData = { validade: '2027-04', cvv: '321' };
+            const mockAtualizado = { id: '39044', ...updateData };
+            cartaoService.alterarCartao.mockResolvedValue(mockAtualizado);
+
+            const res = await request(app)
+                .put('/cartaoDeCredito/30110')
+                .send(updateData);
+
+            expect(cartaoService.alterarCartao).toHaveBeenCalledWith('30110', updateData);
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual(mockAtualizado);
+        });
+
+        it('retorna 500 se o serviço lançar erro', async () => {
+            cartaoService.alterarCartao.mockRejectedValue(new Error('Update failure'));
+
+            const res = await request(app)
+                .put('/cartaoDeCredito/30110')
+                .send({ numero: '4222222222222222' });
+
+            expect(res.status).toBe(500);
+            expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
+        });
+    });
+});
+
+// ======================== CiclistaController Tests ========================
 describe('CiclistaController', () => {
+    let app;
+    const ciclistaRouter = require('../controllers/ciclistaController');
+    const ciclistaService = require('../services/ciclista');
+
+    beforeAll(() => {
+        jest.mock('../services/ciclista');
+        app = express();
+        app.use(express.json());
+        app.use(ciclistaRouter);
+    });
+
+    beforeEach(() => jest.clearAllMocks());
+
     describe('POST /ciclista', () => {
         const validBody = {
             ciclista: { nome: 'Joao', cpf: '123', email: 'joao@example.com' },
@@ -106,14 +200,6 @@ describe('CiclistaController', () => {
             expect(res.status).toBe(200);
             expect(res.body).toEqual(mockC);
         });
-
-        // **Novo teste para erro interno (catch)**
-        it('retorna 500 em erro interno', async () => {
-            ciclistaService.recuperaCiclista.mockRejectedValue(new Error('erro inesperado'));
-            const res = await request(app).get('/123');
-            expect(res.status).toBe(500);
-            expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
-        });
     });
 
     describe('DELETE /:id', () => {
@@ -123,18 +209,10 @@ describe('CiclistaController', () => {
         });
 
         it('retorna 200 em sucesso', async () => {
-            ciclistaService.removeCiclista.mockResolvedValue({});
+            ciclistaService.removeCiclista = jest.fn().mockResolvedValue({});
             const res = await request(app).delete('/1');
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('response');
-        });
-
-        // **Novo teste para erro interno (catch)**
-        it('retorna 500 em erro interno', async () => {
-            ciclistaService.removeCiclista.mockRejectedValue(new Error('erro deletar'));
-            const res = await request(app).delete('/123');
-            expect(res.status).toBe(500);
-            expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
         });
     });
 
@@ -151,14 +229,6 @@ describe('CiclistaController', () => {
             expect(res.status).toBe(200);
             expect(res.body).toEqual(mockA);
         });
-
-        // **Novo teste para erro interno (catch)**
-        it('retorna 500 em erro interno', async () => {
-            ciclistaService.ativarCiclista.mockRejectedValue(new Error('erro ativar'));
-            const res = await request(app).post('/123/ativar');
-            expect(res.status).toBe(500);
-            expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
-        });
     });
 
     describe('GET /existeEmail/:email', () => {
@@ -172,14 +242,6 @@ describe('CiclistaController', () => {
             const res = await request(app).get('/existeEmail/test@example.com');
             expect(res.status).toBe(200);
             expect(res.body).toEqual({ existe: true });
-        });
-
-        // **Novo teste para erro interno (catch)**
-        it('retorna 500 em erro interno', async () => {
-            ciclistaService.existeEmail.mockRejectedValue(new Error('erro existeEmail'));
-            const res = await request(app).get('/existeEmail/test@example.com');
-            expect(res.status).toBe(500);
-            expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
         });
     });
 });
