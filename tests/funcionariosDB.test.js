@@ -14,7 +14,6 @@ const mockFuncionarios = {
       idade: 30,
       funcao: "Atendente",
       senha: "senha123"
-      
     }
   ]
 };
@@ -75,6 +74,71 @@ describe('funcionariosDB', () => {
         "12345678900"
       )
     ).rejects.toThrow('Funcionário já cadastrado com esse email');
+  });
+
+  it('deve lançar erro se nome não for informado', async () => {
+    await expect(
+      funcionariosDB.adicionaFuncionario(
+        "senha123",
+        "email@teste.com",
+        "",       // nome vazio
+        25,
+        "Atendente",
+        "12345678900"
+      )
+    ).rejects.toThrow('Nome é obrigatório');
+  });
+
+  it('deve lançar erro se email não for informado', async () => {
+    await expect(
+      funcionariosDB.adicionaFuncionario(
+        "senha123",
+        "",        // email vazio
+        "José",
+        25,
+        "Atendente",
+        "12345678900"
+      )
+    ).rejects.toThrow('Email é obrigatório');
+  });
+
+  it('deve lançar erro se cpf não for informado', async () => {
+    await expect(
+      funcionariosDB.adicionaFuncionario(
+        "senha123",
+        "email@teste.com",
+        "José",
+        25,
+        "Atendente",
+        ""        // cpf vazio
+      )
+    ).rejects.toThrow('CPF é obrigatório');
+  });
+
+  it('deve lançar erro se senha não for informada', async () => {
+    await expect(
+      funcionariosDB.adicionaFuncionario(
+        "",        // senha vazia
+        "email@teste.com",
+        "José",
+        25,
+        "Atendente",
+        "12345678900"
+      )
+    ).rejects.toThrow('Senha é obrigatória');
+  });
+
+  it('deve lançar erro se função não for informada', async () => {
+    await expect(
+      funcionariosDB.adicionaFuncionario(
+        "senha123",
+        "email@teste.com",
+        "José",
+        25,
+        "",        // função vazia
+        "12345678900"
+      )
+    ).rejects.toThrow('Função é obrigatória');
   });
 
   it('atualiza funcionário existente', async () => {
