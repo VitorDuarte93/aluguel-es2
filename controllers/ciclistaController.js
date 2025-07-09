@@ -100,12 +100,11 @@ router.post('/:id/ativar', async (req, res) => {
     }
 });
 
-router.get('/existeEmail/:email', async (req, res) => {
-    let email = req.params.email;
+router.get('/existeEmail/:email?', async (req, res) => {
+    const email = req.params.email;
     if (!email) {
         return res.status(404).json({ erro: 'Requisição mal formada' });
     }
-
     try {
         const existe = await ciclistaMetodos.existeEmail(email);
         res.status(200).json({ existe });
@@ -114,5 +113,6 @@ router.get('/existeEmail/:email', async (req, res) => {
         res.status(500).json({ erro: 'Erro interno do servidor' });
     }
 });
+
 
 module.exports = router;
