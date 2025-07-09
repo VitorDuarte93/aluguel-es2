@@ -6,11 +6,11 @@ const path = require('path');
 // Mockando o fs para controlar leitura e escrita
 jest.mock('fs/promises');
 
-const dbPath = path.join(__dirname, '../data/ciclistas.json'); 
+const dbPath = path.join(__dirname, '../ciclistas.json');
 // (esse caminho é o que o seu ciclistaDB.js usa pra ler o arquivo)
 
 // Importa o módulo que você quer testar
-const ciclistaDB = require('../repositories/acessoDB/ciclistaDB');
+const ciclistaDB = require('../repositories/acessoDB/ciclistaDB.js');
 
 // Vamos criar um mock para o conteúdo do arquivo JSON baseado no seu database.json
 const mockDB = {
