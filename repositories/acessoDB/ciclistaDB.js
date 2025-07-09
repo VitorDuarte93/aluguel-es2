@@ -1,7 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const dbPath = path.join(__dirname, '../data/ciclistas.json');
+const dbPath = path.join(__dirname, '../ciclistas.json');
 
 // Função utilitária para ler o banco de dados
 async function lerDB() {
