@@ -15,7 +15,7 @@
   },
   "jest": {
     "collectCoverage": true,
-    "collectCoverageFrom": ["**/*.js", "!**/node_modules/**", "!**/tests/**"]
+    "collectCoverageFrom": ["**/*.js", "!**/node_modules/**", "!**/tests/**"],
     "coverageDirectory": "coverage",
     "coverageReporters": ["lcov", "text"]
   }
