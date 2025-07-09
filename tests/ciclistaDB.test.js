@@ -1,19 +1,18 @@
-// tests/ciclistaDB.test.js
-
 const fs = require('fs/promises');
 const path = require('path');
 
 // Mockando o fs para controlar leitura e escrita
 jest.mock('fs/promises');
 
+// Mock do crypto.randomBytes para gerar IDs previsíveis
+jest.mock('crypto', () => ({
+  randomBytes: jest.fn(() => Buffer.from([0, 0, 39, 16])),
+}));
+
 const dbPath = path.join(__dirname, '../repositories/data/ciclistas.json');
 
-// (esse caminho é o que o seu ciclistaDB.js usa pra ler o arquivo)
-
-// Importa o módulo que você quer testar
 const ciclistaDB = require('../repositories/acessoDB/ciclistaDB.js');
 
-// Vamos criar um mock para o conteúdo do arquivo JSON baseado no seu database.json
 const mockDB = {
   ciclistas: [
     {
@@ -74,9 +73,7 @@ describe('ciclistaDB', () => {
   });
 
   it('deve criar um novo ciclista e salvar no DB', async () => {
-    // Mock para readFile que retorna o DB inicial
     fs.readFile.mockResolvedValue(JSON.stringify(mockDB));
-    // Mock para writeFile que só resolve
     fs.writeFile.mockResolvedValue();
 
     const novoCiclista = {
@@ -93,7 +90,7 @@ describe('ciclistaDB', () => {
 
     const result = await ciclistaDB.criarCiclista(novoCiclista, meioDePagamento);
 
-    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty('id', '10000'); // id gerado com base no buffer mockado
     expect(result.nome).toBe('Carlos Pereira');
     expect(fs.writeFile).toHaveBeenCalledWith(
       dbPath,
