@@ -1,7 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const dbFuncionario = path.join(__dirname, 'funcionarios.json');
+const dbFuncionario = path.join(__dirname, '../funcionarios.json');
 async function buscaFuncionarioPorId(idFuncionario){
     try {
         const raw = await fs.readFile(dbFuncionario, 'utf-8');
