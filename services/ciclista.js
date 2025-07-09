@@ -57,10 +57,22 @@ async function existeEmail(email){
     }
 }
 
+
+async function removeCiclista(idCiclista) {
+    try {
+        const resultado = await ciclistaDB.deletarCiclista(idCiclista);
+        return resultado;
+    } catch (error) {
+        throw new Error('Erro ao remover ciclista: ' + error.message);
+    }
+}
+
+
 module.exports = {
   createCiclista: cadastrarCiclista,
   updateCiclista: alteraCiclista,
   getCiclistaById: recuperaCiclista,
   activateCiclista: ativarCiclista,
-  emailExists: existeEmail
+  emailExists: existeEmail,
+    removeCiclista
 };
