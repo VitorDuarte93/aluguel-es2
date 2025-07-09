@@ -19,7 +19,7 @@
     "**/*.js",
     "!**/node_modules/**",
     "!**/tests/**",
-    "!server.js"
+   "!**/server.js"
   ],
   "coverageDirectory": "coverage",
   "coverageReporters": ["lcov", "text"]
