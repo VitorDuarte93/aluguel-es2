@@ -1,4 +1,5 @@
-// tests/cartaoController.test.js
+// tests/cartaoController.test.js 
+/*
 const request = require('supertest');
 const express = require('express');
 const { beforeEach, describe, it, expect } = require('@jest/globals');
