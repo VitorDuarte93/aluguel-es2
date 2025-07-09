@@ -7,13 +7,14 @@ const mockFuncionarios = {
   funcionarios: [
     {
       id: "1",
+      matricula: "F001",
       nome: "Ana Souza",
       email: "ana@email.com",
       cpf: "12345678900",
       idade: 30,
       funcao: "Atendente",
-      senha: "senha123",
-      matricula: "F001"
+      senha: "senha123"
+      
     }
   ]
 };
