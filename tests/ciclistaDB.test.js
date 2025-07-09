@@ -6,7 +6,8 @@ const path = require('path');
 // Mockando o fs para controlar leitura e escrita
 jest.mock('fs/promises');
 
-const dbPath = path.join(__dirname, '../ciclistas.json');
+const dbPath = path.join(__dirname, '../repositories/data/ciclistas.json');
+
 // (esse caminho é o que o seu ciclistaDB.js usa pra ler o arquivo)
 
 // Importa o módulo que você quer testar
