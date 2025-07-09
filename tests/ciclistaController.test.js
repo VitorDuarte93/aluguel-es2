@@ -16,11 +16,13 @@ beforeEach(() => {
 
 describe('DELETE /:id', () => {
   it('retorna 404 se id não for fornecido (rota não encontrada)', async () => {
+    // DELETE / sem id cai no 404 do Express (rota não definida)
     const res = await request(app).delete('/');
     expect(res.status).toBe(404);
   });
 
   it('retorna 404 se id for vazio', async () => {
+    // DELETE // (id vazio) cai no if do controller e retorna 404 JSON
     const res = await request(app).delete('//');
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ erro: 'Requisição mal formada' });
@@ -43,11 +45,13 @@ describe('DELETE /:id', () => {
 
 describe('POST /:id/ativar', () => {
   it('retorna 404 se id inválido (rota não encontrada)', async () => {
+    // Post //ativar não existe no router -> 404 do Express
     const res = await request(app).post('//ativar');
     expect(res.status).toBe(404);
   });
 
   it('retorna 404 se id for vazio', async () => {
+    // Post / /ativar (id vazio, espaço) cai no if do controller
     const res = await request(app).post('/ /ativar');
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ erro: 'Requisição mal formada' });
@@ -71,12 +75,13 @@ describe('POST /:id/ativar', () => {
 
 describe('GET /existeEmail/:email', () => {
   it('retorna 404 se email não for fornecido', async () => {
+    // GET /existeEmail/ sem email cai no 404 do Express
     const res = await request(app).get('/existeEmail/');
     expect(res.status).toBe(404);
-    expect(res.body).toEqual({ erro: 'Requisição mal formada' });
   });
 
   it('retorna 404 se email for vazio', async () => {
+    // GET /existeEmail// (email vazio) cai no if do controller
     const res = await request(app).get('/existeEmail//');
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ erro: 'Requisição mal formada' });
