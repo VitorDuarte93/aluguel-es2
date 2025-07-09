@@ -26,7 +26,7 @@ router.post('/ciclista', async (req, res) => {
     }
 
     try {
-        const ciclistaCadastrado = await ciclistaMetodos.cadastrarCiclista(ciclista, meioDePagamento);
+        const ciclistaCadastrado = await ciclistaMetodos.createCiclista(ciclista, meioDePagamento);
         res.status(201).json(ciclistaCadastrado);
     } catch (error) {
         console.error('Erro ao cadastrar ciclista:', error);
