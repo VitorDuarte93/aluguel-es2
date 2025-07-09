@@ -18,6 +18,55 @@ function createApp() {
     return app;
 }
 
+describe('GET /existeEmail/:email - cobertura completa', () => {
+    const express = require('express');
+    const ciclistaService = require('../services/ciclista'); // já está mockado
+
+    let app;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        const router = express.Router();
+        router.get('/existeEmail/:email?', async (req, res) => {
+            const email = req.params.email;
+            if (!email) {
+                return res.status(404).json({ erro: 'Requisição mal formada' });
+            }
+            try {
+                const existe = await ciclistaService.existeEmail(email);
+                res.status(200).json({ existe });
+            } catch (error) {
+                res.status(500).json({ erro: 'Erro interno do servidor' });
+            }
+        });
+
+        app = express();
+        app.use(router);
+    });
+
+    it('retorna 404 se email não for fornecido (parametro ausente)', async () => {
+        const res = await request(app).get('/existeEmail/');
+        expect(res.status).toBe(404);
+        expect(res.body).toEqual({ erro: 'Requisição mal formada' });
+    });
+
+    it('retorna 200 se email existir', async () => {
+        ciclistaService.existeEmail.mockResolvedValue(true);
+        const res = await request(app).get('/existeEmail/test@example.com');
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({ existe: true });
+    });
+
+    it('retorna 500 se serviço lançar erro', async () => {
+        ciclistaService.existeEmail.mockRejectedValue(new Error('erro interno'));
+        const res = await request(app).get('/existeEmail/test@example.com');
+        expect(res.status).toBe(500);
+        expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
+    });
+});
+
+
 describe('CartãoController', () => {
     let app;
 
