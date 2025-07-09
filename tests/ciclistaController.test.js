@@ -231,6 +231,34 @@ describe('CiclistaController', () => {
         });
     });
 
+    describe('DELETE /:id', () => {
+  it('retorna 500 em erro interno', async () => {
+    ciclistaService.removeCiclista.mockRejectedValue(new Error('fail'));
+    const res = await request(app).delete('/1');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
+  });
+});
+
+describe('POST /:id/ativar', () => {
+  it('retorna 500 em erro interno', async () => {
+    ciclistaService.ativarCiclista.mockRejectedValue(new Error('fail'));
+    const res = await request(app).post('/1/ativar');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
+  });
+});
+
+describe('GET /existeEmail/:email', () => {
+  it('retorna 500 em erro interno', async () => {
+    ciclistaService.existeEmail.mockRejectedValue(new Error('erro interno'));
+    const res = await request(app).get('/existeEmail/test@example.com');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ erro: 'Erro interno do servidor' });
+  });
+});
+
+
     describe('GET /existeEmail/:email', () => {
         it('retorna 404 se faltar email', async () => {
             const res = await request(app).get('/existeEmail/');
