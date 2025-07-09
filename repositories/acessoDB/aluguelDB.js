@@ -1,10 +1,10 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const dbCiclistas = path.join(__dirname, 'ciclistas.json');
-const dbBicicletas = path.join(__dirname, 'bicicletas.json');
-const dbTrancas = path.join(__dirname, 'trancas.json');
-const dbAlugueis = path.join(__dirname, 'alugueis.json');
+const dbCiclistas = path.join(__dirname, '../ciclistas.json');
+const dbBicicletas = path.join(__dirname, '../bicicletas.json');
+const dbTrancas = path.join(__dirname, '../trancas.json');
+const dbAlugueis = path.join(__dirname, '../alugueis.json');
 
 async function recuperaBicicletaPorTranca(idTranca) {
     try {
