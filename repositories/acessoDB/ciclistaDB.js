@@ -35,8 +35,8 @@ async function criarCiclista(ciclista, meioDePagamento) {
     const emailExistente = db.ciclistas.find(c => c.email === ciclista.email);
     if (emailExistente) throw new Error('Email já cadastrado');
 
-    const id = gerarId();
-    const pagamentoId = gerarId();
+    const id = gerarIdSeguroNum();
+    const pagamentoId = gerarIdSeguroNum();
 
     const novoCiclista = { id, ativado: false, ...ciclista };
     const novoPagamento = { id: pagamentoId, ciclistaId: id, ...meioDePagamento };
