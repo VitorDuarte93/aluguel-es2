@@ -22,8 +22,12 @@ async function salvarDB(db) {
     }
 }
 
-function gerarId() {
-    return Math.floor(10000 + Math.random() * 90000).toString();
+const crypto = require('crypto');
+
+function gerarIdSeguroNum() {
+  const buffer = crypto.randomBytes(4);
+  const num = buffer.readUInt32BE(0);
+  return (10000 + (num % 90000)).toString();
 }
 
 async function criarCiclista(ciclista, meioDePagamento) {
