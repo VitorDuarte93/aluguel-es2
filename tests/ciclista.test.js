@@ -8,33 +8,54 @@ jest.mock('../repositories/ciclistaDB');
 describe('ciclistaService', () => {
     beforeEach(() => jest.clearAllMocks());
 
-    describe('createCiclista', () => {
-        const validInput = {
-            ciclista: { nome: 'Ana', cpf: '12345678901', email: 'ana@example.com', nascimento: '1990-01-01' },
-            meioDePagamento: { numero: '4111111111111111', validade: '2026-12', cvv: '123' }
-        };
+   describe('createCiclista', () => {
+    const ciclista = { nome: 'Ana', cpf: '12345678901', email: 'ana@example.com', nascimento: '1990-01-01' };
+    const meioDePagamento = { numero: '4111111111111111', validade: '2026-12', cvv: '123' };
 
-        it('deve lançar erro se senhas não conferirem', async () => {
-            await expect(
-                ciclistaService.createCiclista({ ...validInput, senha: 'a', confSenha: 'b' })
-            ).rejects.toThrow('Senhas não conferem');
-        });
-
-        it('deve lançar erro se dados incompletos', async () => {
-            await expect(
-                ciclistaService.createCiclista({ ciclista: { nome: '', cpf: '', email: '' }, meioDePagamento: {}, senha: 'x', confSenha: 'x' })
-            ).rejects.toThrow('Dados de ciclista incompletos');
-        });
-
-        it('deve criar ciclista chamando o repositório', async () => {
-            const mockResult = { id: '1', nome: 'Ana' };
-            db.criarCiclista.mockResolvedValue(mockResult);
-
-            const result = await ciclistaService.createCiclista({ ...validInput, senha: '123', confSenha: '123' });
-            expect(db.criarCiclista).toHaveBeenCalledWith(validInput.ciclista, validInput.meioDePagamento);
-            expect(result).toBe(mockResult);
-        });
+    it('deve lançar erro se email já estiver cadastrado', async () => {
+        db.existeEmail.mockResolvedValue(true);
+        await expect(
+            ciclistaService.createCiclista(ciclista, meioDePagamento)
+        ).rejects.toThrow('Erro ao cadastrar ciclista: Email já cadastrado');
     });
+
+    it('deve criar ciclista chamando o repositório', async () => {
+        db.existeEmail.mockResolvedValue(false);
+        const mockResult = { id: '1', ...ciclista };
+        db.criarCiclista.mockResolvedValue(mockResult);
+
+        const result = await ciclistaService.createCiclista(ciclista, meioDePagamento);
+
+        expect(db.existeEmail).toHaveBeenCalledWith(ciclista.email);
+        expect(db.criarCiclista).toHaveBeenCalledWith(ciclista, meioDePagamento);
+        expect(result).toBe(mockResult);
+    });
+
+    it('deve lançar erro se validarEmail lançar exceção', async () => {
+        // Mock para forçar erro na validação do email
+        const validacao = require('../services/validacao');
+        jest.spyOn(validacao, 'validarEmail').mockImplementation(() => { throw new Error('Email inválido'); });
+
+        await expect(
+            ciclistaService.createCiclista(ciclista, meioDePagamento)
+        ).rejects.toThrow('Erro ao cadastrar ciclista: Email inválido');
+
+        validacao.validarEmail.mockRestore();
+    });
+
+    it('deve lançar erro se validarCPF lançar exceção', async () => {
+        // Mock para forçar erro na validação do CPF
+        const validacao = require('../services/validacao');
+        jest.spyOn(validacao, 'validarCPF').mockImplementation(() => { throw new Error('CPF inválido'); });
+
+        await expect(
+            ciclistaService.createCiclista(ciclista, meioDePagamento)
+        ).rejects.toThrow('Erro ao cadastrar ciclista: CPF inválido');
+
+        validacao.validarCPF.mockRestore();
+    });
+});
+
 
     describe('getCiclistaById', () => {
         it('deve lançar erro se não encontrar', async () => {
