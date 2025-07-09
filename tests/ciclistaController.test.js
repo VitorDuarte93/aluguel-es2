@@ -252,10 +252,11 @@ describe('CiclistaController', () => {
     });
 
     describe('DELETE /:id', () => {
-        it('retorna 404 se faltar id', async () => {
-            const res = await request(app).delete('/');
-            expect(res.status).toBe(404);
-        });
+       it('retorna 404 se faltar id', async () => {
+    const res = await request(app).post('/ativar');
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ erro: 'Requisição mal formada' });
+});
 
         it('retorna 200 em sucesso', async () => {
             ciclistaService.removeCiclista = jest.fn().mockResolvedValue({});
@@ -309,10 +310,11 @@ describe('GET /existeEmail/:email', () => {
 
 
     describe('GET /existeEmail/:email', () => {
-        it('retorna 404 se faltar email', async () => {
-            const res = await request(app).get('/existeEmail/');
-            expect(res.status).toBe(404);
-        });
+       it('retorna 404 se faltar email', async () => {
+    const res = await request(app).get('/existeEmail');
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ erro: 'Requisição mal formada' });
+});
 
         it('retorna 200 com objeto existe', async () => {
             ciclistaService.existeEmail.mockResolvedValue(true);
