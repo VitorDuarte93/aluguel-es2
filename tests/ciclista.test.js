@@ -1,70 +1,115 @@
-const validacao = require('./validacao');
-const ciclistaDB = require("../repositories/acessoDB/ciclistaDB");
+// tests/ciclistaService.test.js
+const {
+  createCiclista,
+  updateCiclista,
+  getCiclistaById,
+  activateCiclista,
+  emailExists,
+  removeCiclista
+} = require('../services/ciclista');
 
-async function cadastrarCiclista(ciclista, meioDePagamento) {
-    try {
-        validacao.validarEmail(ciclista.email);
-        validacao.validarCPF(ciclista.cpf);
-        const emailExistente = await ciclistaDB.existeEmail(ciclista.email);
-        if (emailExistente) {
-            throw new Error('Email já cadastrado');
-        }
-        const novoCiclista = await ciclistaDB.criarCiclista(ciclista, meioDePagamento);
-        return novoCiclista;
-    } catch (error) {
-        throw new Error('Erro ao cadastrar ciclista: ' + error.message);
-    }
-}
+const db = require('../repositories/acessoDB/ciclistaDB');
+const validacao = require('../services/validacao');
+const { beforeEach, describe, it, expect } = require('@jest/globals');
 
-async function alteraCiclista(idCiclista) {
-    try {
-        return await ciclistaDB.atualizarCiclista(idCiclista);
-    } catch (error) {
-        throw new Error('Erro ao atualizar ciclista: ' + error.message);
-    }
-}
+jest.mock('../repositories/acessoDB/ciclistaDB');
 
-async function recuperaCiclista(idCiclista) {
-    try {
-        const ciclista = await ciclistaDB.obterCiclista(idCiclista);
-        if (!ciclista) {
-            throw new Error('Ciclista não encontrado');
-        }
-        return ciclista;
-    } catch (error) {
-        throw new Error('Erro ao recuperar ciclista: ' + error.message);
-    }
-}
+describe('ciclistaService', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-async function ativarCiclista(idCiclista) {
-    try {
-        return await ciclistaDB.ativarCiclista(idCiclista);
-    } catch (error) {
-        throw new Error('Erro ao ativar ciclista: ' + error.message);
-    }
-}
+  describe('createCiclista', () => {
+    const ciclista = { nome: 'Ana', cpf: '12345678901', email: 'ana@example.com', nascimento: '1990-01-01' };
+    const meioDePagamento = { numero: '4111111111111111', validade: '2026-12', cvv: '123' };
 
-async function existeEmail(email) {
-    try {
-        return await ciclistaDB.existeEmail(email);
-    } catch (error) {
-        throw new Error('Erro ao verificar email: ' + error.message);
-    }
-}
+    it('deve lançar erro se email já estiver cadastrado', async () => {
+      db.existeEmail.mockResolvedValue(true);
+      await expect(createCiclista(ciclista, meioDePagamento))
+        .rejects.toThrow('Erro ao cadastrar ciclista: Email já cadastrado');
+    });
 
-async function removerCiclista(idCiclista) {
-    try {
-        return await ciclistaDB.deletarCiclista(idCiclista);
-    } catch (error) {
-        throw new Error('Erro ao remover ciclista: ' + error.message);
-    }
-}
+    it('deve criar ciclista chamando o repositório', async () => {
+      db.existeEmail.mockResolvedValue(false);
+      const mockResult = { id: '1', ...ciclista };
+      db.criarCiclista.mockResolvedValue(mockResult);
 
-module.exports = {
-    createCiclista: cadastrarCiclista,
-    updateCiclista: alteraCiclista,
-    getCiclistaById: recuperaCiclista,
-    activateCiclista: ativarCiclista,
-    emailExists: existeEmail,
-    removeCiclista: removerCiclista // <- ADICIONADO
-};
+      const result = await createCiclista(ciclista, meioDePagamento);
+
+      expect(db.existeEmail).toHaveBeenCalledWith(ciclista.email);
+      expect(db.criarCiclista).toHaveBeenCalledWith(ciclista, meioDePagamento);
+      expect(result).toBe(mockResult);
+    });
+
+    it('deve lançar erro se validarEmail lançar exceção', async () => {
+      jest.spyOn(validacao, 'validarEmail').mockImplementation(() => { throw new Error('Email inválido'); });
+
+      await expect(createCiclista(ciclista, meioDePagamento))
+        .rejects.toThrow('Erro ao cadastrar ciclista: Email inválido');
+
+      validacao.validarEmail.mockRestore();
+    });
+
+    it('deve lançar erro se validarCPF lançar exceção', async () => {
+      jest.spyOn(validacao, 'validarCPF').mockImplementation(() => { throw new Error('CPF inválido'); });
+
+      await expect(createCiclista(ciclista, meioDePagamento))
+        .rejects.toThrow('Erro ao cadastrar ciclista: CPF inválido');
+
+      validacao.validarCPF.mockRestore();
+    });
+  });
+
+  describe('getCiclistaById', () => {
+    it('deve lançar erro se não encontrar', async () => {
+      db.obterCiclista.mockResolvedValue(undefined);
+      await expect(getCiclistaById('999')).rejects.toThrow('Ciclista não encontrado');
+    });
+
+    it('deve retornar ciclista em sucesso', async () => {
+      const mockC = { id: '1', nome: 'Joao' };
+      db.obterCiclista.mockResolvedValue(mockC);
+      const result = await getCiclistaById('1');
+      expect(result).toBe(mockC);
+    });
+  });
+
+  describe('updateCiclista', () => {
+    it('deve chamar o repositório e retornar resultado', async () => {
+      const mockUpdated = { id: '1', nome: 'Maria' };
+      db.atualizarCiclista.mockResolvedValue(mockUpdated);
+      const result = await updateCiclista('1');
+      expect(db.atualizarCiclista).toHaveBeenCalledWith('1');
+      expect(result).toBe(mockUpdated);
+    });
+  });
+
+  describe('removeCiclista', () => {
+    it('deve chamar o repositório e retornar mensagem', async () => {
+      const mockRem = { mensagem: 'ok' };
+      db.deletarCiclista.mockResolvedValue(mockRem);
+      const result = await removeCiclista('1');
+      expect(db.deletarCiclista).toHaveBeenCalledWith('1');
+      expect(result).toBe(mockRem);
+    });
+  });
+
+  describe('activateCiclista', () => {
+    it('deve ativar ciclista', async () => {
+      const mockA = { id: '1', ativado: true };
+      db.ativarCiclista.mockResolvedValue(mockA);
+      const result = await activateCiclista('1');
+      expect(db.ativarCiclista).toHaveBeenCalledWith('1');
+      expect(result).toBe(mockA);
+    });
+  });
+
+  describe('emailExists', () => {
+    it('deve retornar true ou false', async () => {
+      db.existeEmail.mockResolvedValue(true);
+      const exists = await emailExists('x@x.com');
+      expect(db.existeEmail).toHaveBeenCalledWith('x@x.com');
+      expect(exists).toBe(true);
+    });
+  });
+});
